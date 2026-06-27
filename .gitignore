@@ -1,0 +1,15 @@
+*.gguf
+*.npz
+*.npy
+*.so
+*.bin
+*.pyc
+*.log
+*.jsonl
+__pycache__/
+llama.cpp/
+whisper.cpp/
+vault/
+vault_4AM/
+github-recovery-codes.txt
+leanne_identity.txt
