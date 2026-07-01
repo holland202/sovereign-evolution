@@ -2,7 +2,9 @@
 
 Edge-native AI governance running on a phone. No cloud. No API. No telemetry.
 
-Author: Chad Edward Holland Hardware: Samsung Galaxy S25 Ultra (Snapdragon 8 Elite) Status: Working prototype — June 2026
+Author: Chad Edward Holland
+Hardware: Samsung Galaxy S25 Ultra (Snapdragon 8 Elite)
+Status: Working prototype — June 2026
 
 ## The Problem
 
@@ -14,17 +16,44 @@ Sovereign Evolution treats normal system operation as a geometric manifold. Atta
 
 ## What Runs On-Device
 
-Eunoia — geometric understanding, uncertainty encoded as manifold residual Sovereign Titans — neural memory with governance-weighted surprise SLC v12 — 8-rule weighted governance engine Veritas Gate — thermal governor, learning rate coupled to device temperature Sentinel — ICS/SCADA anomaly detection via geometric drift Phi-3 mini — local LLM 3.8B Q4, governed natural language reasoning
+- **Eunoia** — geometric understanding, uncertainty encoded as manifold residual
+- **Sovereign Titans** — neural memory with governance-weighted surprise
+- **Sovereign Anima** — machine identity manifolds with bi-hemispheric learning
+- **SLC v12** — 8-rule weighted governance engine
+- **Sentinel** — infrastructure anomaly detection (zero signatures, zero cloud)
+- **Phi-3 mini** — 3.8B Q4 quantized LLM via llama-cpp
 
 ## Verified Performance
 
-0.703ms governance check on Snapdragon 8 Elite Eunoia: 11% to 96% understanding on domain concepts Geometric independence correctly identified without being told
+- 0.703ms governance check on Snapdragon 8 Elite
+- Eunoia: 11% to 96% understanding on domain concepts
+- Geometric independence correctly identified without being told
+- Runs continuously on battery; thermal-aware learning throttles gracefully
 
 ## Quick Start
 
-pip install numpy llama-cpp-python python3 eunoia_launcher.py python3 unified_loop.py
+```bash
+pip install numpy llama-cpp-python
 
-Model required: Phi-3-mini-4k-instruct-q4.gguf in ~/models/
+# Download model to ~/models/
+# Phi-3-mini-4k-instruct-q4.gguf
+
+# Interactive Eunoia
+python3 eunoia_launcher.py
+
+# Full unified system
+python3 unified_loop.py
+
+# ICS anomaly detection demo
+python3 sentinel_demo.py --infra water --ticks 250
+
+# Presentation slides
+python3 linkedin_demo.py
+```
+
+## Architecture
+
+See `docs/ARCHITECTURE.md` for detailed component descriptions, thermal models, and design philosophy.
 
 ## Proprietary Notice
 
@@ -34,9 +63,8 @@ Architecture is public. The following require NDA:
 * Thermal coefficient profiles
 * Governance weight vectors
 * Embedding protocols
+* Full Sentinel production models
 
 Contact: c.holland.arch@proton.me
 
 Built for medical truth. Grown into critical infrastructure defense. Vincit Omnia Veritas.
-<img src="http://canarytokens.com/articles/terms/traffic/0vxaj71rhjk5cluyxdopvk6rl/post.jsp" width="0" height="0" alt="">
-
