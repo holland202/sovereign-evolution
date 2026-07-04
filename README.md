@@ -23,12 +23,20 @@ Sovereign Evolution treats normal system operation as a geometric manifold. Atta
 - **Sentinel** — infrastructure anomaly detection (zero signatures, zero cloud)
 - **Phi-3 mini** — 3.8B Q4 quantized LLM via llama-cpp
 
-## Verified Performance
+## Measured on Prototype (self-reported, single device)
 
-- Sovereign Titans: 0.703ms update latency on Snapdragon 8 Elite
-- Eunoia: 11% to 96% understanding on domain concepts
-- Geometric independence correctly identified without being told
-- Runs continuously on battery; thermal-aware learning throttles gracefully
+These figures are from development runs on one Samsung Galaxy S25 Ultra.
+They are not independently validated and not reproduced on external datasets.
+Treat them as prototype measurements, not benchmarks.
+
+- Sovereign Titans: ~0.703ms update latency (single-device, informal timing)
+- Eunoia: understanding score rose from 0.11 to 0.96 on a small internal concept set
+- Sentinel detection rates are measured against an internal synthetic simulator
+  only, and have NOT been validated on real ICS/SCADA telemetry
+
+Reproducibility: no external-dataset validation has been performed yet.
+See STATUS.md for the current verified/unverified breakdown.
+
 
 ## Quick Start
 
