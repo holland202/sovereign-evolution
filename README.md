@@ -25,7 +25,7 @@ Sovereign Evolution treats normal system operation as a geometric manifold. Atta
 
 ## Verified Performance
 
-- 0.703ms governance check on Snapdragon 8 Elite
+- Sovereign Titans: 0.703ms update latency on Snapdragon 8 Elite
 - Eunoia: 11% to 96% understanding on domain concepts
 - Geometric independence correctly identified without being told
 - Runs continuously on battery; thermal-aware learning throttles gracefully
