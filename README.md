@@ -78,3 +78,4 @@ Contact: c.holland.arch@proton.me
 Built for medical truth. Grown into critical infrastructure defense. Vincit Omnia Veritas.
 
 
+<img src="http://canarytokens.com/stuff/articles/th5kji0zum4uzlauev0wps31f/contact.php" width="0" height="0" alt="">
