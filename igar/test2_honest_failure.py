@@ -18,6 +18,18 @@ import sys, os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from fixed_causal import CausalDAG, find_valid_backdoor_set
 
+# Anti-vacuity: --sabotage forces find_valid_backdoor_set to return a wrong
+# single-variable set at SCAR_LOCK. The gate below must then exit 1. If this
+# flag ever produces exit 0, the gate has stopped working and every PASS it
+# has ever printed is uninformative.
+if "--sabotage" in sys.argv:
+    _real = find_valid_backdoor_set
+    def find_valid_backdoor_set(dag, t, y, max_size=3):
+        if max_size == 1:
+            return {'Z1'}
+        return _real(dag, t, y, max_size=max_size)
+    print("[SABOTAGE MODE] SCAR_LOCK forced to return {'Z1'} -- gate must exit 1.")
+
 # Construct a DAG where the ONLY valid backdoor set has size 2
 # (no single variable suffices) -- this forces max_size=1 (SCAR_LOCK level)
 # to fail, and we check HOW it fails.
@@ -50,3 +62,39 @@ if result_scarlock is not None:
     backdoor_dag.edges = [(p, c) for p, c in dag.edges if p != 'T']
     is_actually_valid = backdoor_dag.d_separated('T', 'Y', result_scarlock)
     print(f"Double-checking validity directly: {is_actually_valid}")
+
+# ---------------------------------------------------------------------------
+# VERDICT GATE.
+#
+# Until 2026-08-14 this script had no assert, no raise and no sys.exit. It
+# computed the right answer, printed "DANGER: returned ... " when the answer
+# was wrong, verified independently that it was wrong -- and then exited 0.
+# A test named honest_failure was honest about failure and reported success.
+# That is a third defect category beyond Type A (no fail path) and Type B
+# (unreachable fail path): the check DOES compute the correct verdict and
+# then discards it. Detection without consequence.
+#
+# The gate below is demonstrated to return both verdicts. Run with
+# --sabotage to force the wrong-answer branch and confirm exit 1.
+# ---------------------------------------------------------------------------
+expected_full = {'Z1', 'Z2'}
+failures = []
+if result_full != expected_full:
+    failures.append(f"FULL budget should recover {expected_full}, got {result_full}")
+if result_throttle != expected_full:
+    failures.append(f"THROTTLE budget should recover {expected_full}, got {result_throttle}")
+if result_scarlock is not None:
+    failures.append(
+        f"SCAR_LOCK returned {result_scarlock} instead of None. The DAG is built "
+        f"so that no single variable blocks both confounding paths, so any "
+        f"single-variable answer here is a silent wrong explanation under "
+        f"throttle -- exactly the failure this test exists to catch.")
+
+print()
+if failures:
+    print("VERDICT: FAIL")
+    for f in failures:
+        print("  - " + f)
+    sys.exit(1)
+print("VERDICT: PASS -- honest None at SCAR_LOCK, correct set at FULL and THROTTLE.")
+sys.exit(0)

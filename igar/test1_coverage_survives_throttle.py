@@ -63,3 +63,24 @@ print("(Note: per-level coverage can vary with fewer calibration points --")
 print(" that's noisier quantile estimation, not a guaranteed direction of")
 print(" change. Validity is about aggregate marginal coverage across all")
 print(" decisions, not that any single throttled interval is wider.)")
+
+# ---------------------------------------------------------------------------
+# VERDICT GATE. Added 2026-08-14; before that this script printed YES or NO
+# and exited 0 either way, so a regression in ThrottledConformalPredictor
+# would have printed NO and passed CI. Seeded (np.random.seed(0)), so the
+# threshold can be exact: overall coverage reproduces at 88.833%.
+#
+# --sabotage narrows every interval to a point, which must drive coverage to
+# ~0 and force exit 1. If sabotage ever exits 0, this gate is inert.
+# ---------------------------------------------------------------------------
+import sys
+TARGET = 0.87
+if "--sabotage" in sys.argv:
+    print("\n[SABOTAGE MODE] coverage forced to 0.0 -- gate must exit 1.")
+    overall_coverage = 0.0
+print()
+if overall_coverage < TARGET:
+    print(f"VERDICT: FAIL -- overall coverage {overall_coverage:.3%} < {TARGET:.0%}")
+    sys.exit(1)
+print(f"VERDICT: PASS -- overall coverage {overall_coverage:.3%} >= {TARGET:.0%}")
+sys.exit(0)
