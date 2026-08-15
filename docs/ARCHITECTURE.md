@@ -20,11 +20,7 @@
 ### Sovereign Titans (Governance-Gated Memory)
 - 64-d manifold, rank-20
 - **Scar Condition**: Surprise > theta_scar AND governance < theta_gov
-- **Sector Thresholds**: Calibrated per infrastructure type
-  - Defense: theta_scar=0.12, theta_gov=0.50
-  - Healthcare: theta_scar=0.10, theta_gov=0.55
-  - Aerospace: theta_scar=0.15, theta_gov=0.45
-  - Robotics/Automotive: theta_scar=0.12, theta_gov=0.50
+- **Sector Thresholds**: Calibrated per infrastructure type (specific values are parameter/calibration data — see Proprietary Notice — available under NDA)
 - Thermal-aware learning: eta_t = eta * phi(temp, state)
 - Stores state in `~/.sovereign_memory/titans_{sector}.npz`
 
