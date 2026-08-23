@@ -1,0 +1,20 @@
+name: verify
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: igar coverage-survives-throttle
+        run: python3 igar/test1_coverage_survives_throttle.py
+      - name: igar honest-failure
+        run: python3 igar/test2_honest_failure.py
