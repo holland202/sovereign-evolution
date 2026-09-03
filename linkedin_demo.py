@@ -1,4 +1,16 @@
 #!/usr/bin/env python3
+"""
+SCRIPTED DEMONSTRATION — NOT LIVE MEASUREMENT.
+
+Every governance score, verdict, medical line, and threshold printed below is a
+hardcoded string written for a screen recording. No model is queried, no
+governance engine runs, no scar is written, and the medical text is invented —
+it is NOT clinical output and must not be used as such. The thermal reading is
+the only live value. The notification fires unconditionally.
+
+Real, measured work lives in the test suites and FINDINGS files.
+"""
+
 import os, subprocess
 
 G="\033[92m";Y="\033[93m";R="\033[91m";C="\033[96m";D="\033[2m";X="\033[0m";BD="\033[1m"
