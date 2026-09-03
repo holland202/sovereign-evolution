@@ -84,7 +84,7 @@ except: pass
 step()
 
 # SLIDE 5: Thermal self-awareness
-p("  THERMAL GOVERNANCE — LIVE DEMONSTRATION", C+BD)
+p("  THERMAL GOVERNANCE — SCRIPTED WALKTHROUGH", C+BD)
 p("  ─────────────────────────────────────────────", D)
 p("  36°C  →  NOMINAL     Learning rate: 100%", G)
 p("  38°C  →  CAUTION     Learning rate:  70%", Y)
