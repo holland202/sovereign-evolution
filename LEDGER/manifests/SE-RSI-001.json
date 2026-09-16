@@ -1,0 +1,23 @@
+{
+  "experiment_id": "SE-RSI-001",
+  "claim_ids": ["SE-001", "SE-002"],
+  "instrument_repo": "holland202/quasar",
+  "branch": "rsi-meta-curriculum",
+  "candidate_revision": "061368f1eb6a776dc824c03255026928d4c533d7",
+  "record_commit": "894955b",
+  "gate_test_commit": "fdde056",
+  "lineage_on_main": "c3d6f73",
+  "evaluator": "held-out Bures loss, make_holdout(seed=777, n=16), unmodified",
+  "seed_hash": "10c3814e9f7c178b",
+  "selection_seeds": [1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008],
+  "test_seeds": [9001, 9002, 9003, 9004, 9005, 9006, 9007, 9008],
+  "budgets": [80, 240, 720],
+  "environment": "Python 3.14.6, NumPy 2.4.4, Android-16-aarch64",
+  "device": "Samsung Galaxy S25 Ultra, Termux",
+  "runtime_s": 2594.6,
+  "verdict": "P0b = FALSE",
+  "status": "NOT ADMISSIBLE (VOID)",
+  "r1": "NOT TESTED",
+  "r2": "NOT TESTED",
+  "reproduction_status": "none_recorded"
+}
