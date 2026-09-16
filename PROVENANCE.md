@@ -5,7 +5,7 @@
 - **Repository**: holland202/sovereign-evolution
 - **Canonical URL**: https://github.com/holland202/sovereign-evolution
 - **Purpose**: Edge-native AI governance research and working prototype (no cloud, no API, no telemetry). Serves as an early research-operating / integration surface for related instruments.
-- **License**: MIT (confirm LICENSE if present)
+- **License**: MIT (see `LICENSE`)
 
 ## Origin
 
@@ -42,7 +42,7 @@ This repository is treated as an umbrella / governance / research-operating laye
 
 Prototype measurements are self-reported on a single device. Documentation explicitly states they are not independently validated and not reproduced on external datasets beyond limited BATADAL replay.
 
-Detailed component-level verified/unverified breakdown is maintained in STATUS.md (when present).
+Detailed component-level verified/unverified breakdown is maintained in `STATUS.md`. Note that its claims carry a verification date of 2026-07-05 and its own amendment section lists what has changed in the repository since; read both before citing it.
 
 ## Independent Reproduction
 
