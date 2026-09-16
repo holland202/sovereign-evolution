@@ -63,6 +63,10 @@ python3 -m pytest
 
 See `docs/ARCHITECTURE.md` for detailed component descriptions, thermal models, and design philosophy.
 
+## Research Ledger
+
+Experiment records, claims, and instrument pointers live under [`LEDGER/`](LEDGER/). That directory is the evidence-accounting layer. It does not establish capability claims.
+
 ## Proprietary Notice
 
 Architecture is public. The following require NDA:
@@ -76,5 +80,3 @@ Architecture is public. The following require NDA:
 Contact: c.holland.arch@proton.me
 
 Built for medical truth. Grown into critical infrastructure defense. Vincit Omnia Veritas.
-
-
