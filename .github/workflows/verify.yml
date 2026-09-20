@@ -20,3 +20,6 @@ jobs:
         run: python3 igar/test1_coverage_survives_throttle.py
       - name: igar honest-failure
         run: python3 igar/test2_honest_failure.py
+
+      - name: evidence engine (adversarial suite)
+        run: python3 tests/test_evidence_engine.py
