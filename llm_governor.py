@@ -164,11 +164,19 @@ class ThermalRule(DecisionRule):
             score = 0.8
         if context.get("scar_count", 0) > 100:
             score *= 0.95
-        return score, {"rule": self.name, "decision": _band(score),
-                       "thermal_state": state, "thermal_temp": temp,
-                       "mission_critical": mission,
-                       "reason": f"Thermal {state}: score {score:.2f}",
-                       "confidence": 0.95}
+        # FIX-6: LOCKED is a hard stop, CAUTION is advisory. Same rule,
+        # different authority. thermal_governor already computes
+        # governable=False at this state; discarding that and letting the
+        # mean decide inverted it on device.
+        out = {"rule": self.name, "decision": _band(score),
+               "thermal_state": state, "thermal_temp": temp,
+               "mission_critical": mission,
+               "reason": f"Thermal {state}: score {score:.2f}",
+               "confidence": 0.95}
+        if state == "LOCKED" and not mission:
+            out["veto"] = True
+            out["reason"] = f"Thermal {state}: hard stop, not advisory"
+        return score, out
 
 
 class BatteryRule(DecisionRule):
@@ -388,10 +396,20 @@ class LLMGovernorDecisionEngine:
 
             # FIX-1: veto runs BEFORE the weighted mean. A veto rule scoring
             # near zero ends the decision; it never joins the average.
+            # FIX-6: veto is a property of a VERDICT, not only of a rule.
+            # A rule may carry veto=False in general and still return an
+            # outcome that must hard-stop -- ThermalRule at LOCKED is the
+            # case that forced this. Measured on device 2026-09-20: a benign
+            # query at 55.7C with ThermalConstraint scoring 0.0 returned
+            # ALLOW at 0.8361, because seven unrelated rules outvoted the
+            # thermal lockout in the weighted mean. That is FIX-1's dilution
+            # bug in a rule FIX-1 did not cover.
             for rule in self.rules:
-                if not rule.enabled or not rule.veto:
+                if not rule.enabled:
                     continue
                 score, reasoning = rule_scores.get(rule.name, (1.0, {}))
+                if not (rule.veto or reasoning.get("veto", False)):
+                    continue
                 if score <= self.VETO_THRESHOLD:
                     return self._record(DecisionEvaluation(
                         decision=LLMDecision.BLOCK, confidence=1.0,
