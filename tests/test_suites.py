@@ -133,6 +133,26 @@ def test_runtime_reports_absent_sensors_without_substituting():
     assert "rules_never_wired" in out, out[-800:]
 
 
+def test_se008_reproduces_from_the_ledger_fixture():
+    """SE-008 must be reproducible by a stranger with a fresh clone.
+
+    The ledger record carries a JSON fixture of the three pre-fix decisions,
+    but a fixture nothing executes is documentation, not reproduction. This
+    runs it and asserts the registered prediction: records 1 and 2 unchanged,
+    record 3 ALLOW -> BLOCK. No log, model, network or sensors required."""
+    p = run("sovereign_runtime.py", ["--replay-fixture"], timeout=120)
+    assert p.returncode == 0, p.stdout[-1500:] + p.stderr[-500:]
+    out = p.stdout
+    assert "3 replayed" in out, out[-900:]
+    assert "2 agree, 1 disagree" in out, out[-900:]
+    assert "33.3%" in out, out[-900:]
+    # The change must be the third record, not just any one of them.
+    changed = [l for l in out.splitlines() if "CHANGED" in l]
+    assert len(changed) == 1, changed
+    assert changed[0].strip().startswith("3"), changed[0]
+    assert "BLOCK" in changed[0], changed[0]
+
+
 def test_no_suite_is_silently_absent():
     """If a suite file goes missing, that must surface here rather than
     quietly shrinking what `pytest` verifies -- which is exactly how this

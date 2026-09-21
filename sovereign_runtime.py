@@ -54,6 +54,7 @@ Stdlib only, plus the local components. Python 3.11+.
     python3 sovereign_runtime.py --probe        # one-shot context probe
     python3 sovereign_runtime.py                # interactive
     python3 sovereign_runtime.py --replay LOG   # re-verdict a past log
+    python3 sovereign_runtime.py --replay-fixture  # reproduce SE-008
 """
 
 from __future__ import annotations
@@ -378,6 +379,94 @@ def log_decision(rec: Dict[str, Any]) -> None:
 # replay — the interesting part
 # ==========================================================================
 
+FIXTURE_RECORD = "LEDGER/experiments/SE-RT-001.md"
+
+
+def load_fixture(path: str = FIXTURE_RECORD):
+    """Parse the reproduction fixture out of the SE-RT-001 ledger record.
+
+    Read from the record rather than embedded here on purpose: a second copy
+    would drift from the first. If the record changes, this follows it."""
+    import re
+    full = path if os.path.isabs(path) else os.path.join(HERE, path)
+    if not os.path.exists(full):
+        raise FileNotFoundError(f"{path} not found")
+    text = open(full, encoding="utf-8").read()
+    m = re.search(r"```json\n(.*?)\n```", text, re.S)
+    if not m:
+        raise ValueError(f"no ```json fixture block in {path}")
+    return json.loads(m.group(1))
+
+
+def replay_fixture(path: str = FIXTURE_RECORD) -> int:
+    """Re-decide the SE-RT-001 pre-fix records with the CURRENT components.
+
+    This is the reproduction path for SE-008. It needs no decisions.jsonl,
+    no model, no network and no sensors -- every reading comes from the
+    fixture. Registered prediction, from the ledger record: records 1 and 2
+    unchanged, record 3 ALLOW -> BLOCK, 33.3% drift, type B."""
+    try:
+        recs = load_fixture(path)
+    except Exception as e:                                      # noqa: BLE001
+        print(f"could not load fixture: {type(e).__name__}: {e}", file=sys.stderr)
+        return 2
+
+    print("=" * 70)
+    print("SE-008 REPRODUCTION — replay of the SE-RT-001 pre-fix records")
+    print("=" * 70)
+    print(f"fixture : {path}")
+    print(f"records : {len(recs)}")
+    print(f"python  : {sys.version.split()[0]}  {sys.platform}")
+    print()
+    print("Registered prediction (from the ledger record, written before the")
+    print("fix was applied): records 1 and 2 unchanged, record 3 ALLOW ->")
+    print("BLOCK, 33.3% drift, type B.")
+    print()
+    print(f"{'#':>3}  {'logged':<7} {'replayed':<8}  {'thermal':<22} input")
+
+    agree = disagree = 0
+    for r in recs:
+        c = Context()
+        c.readings = {
+            "user_input": Reading.operator(r["user_input"], "fixture"),
+            "thermal_mode": (Reading.of(r["thermal_mode"], "fixture")
+                             if r.get("thermal_mode") else
+                             Reading.missing("absent in fixture")),
+            "thermal_temp": (Reading.of(r["thermal_temp"], "fixture")
+                             if r.get("thermal_temp") is not None else
+                             Reading.missing("absent in fixture")),
+            "battery_percent": (Reading.of(r["battery_percent"], "fixture")
+                                if r.get("battery_percent") is not None else
+                                Reading.missing("absent in fixture")),
+            "network_available": Reading.missing("absent in fixture"),
+            "llm_available": Reading.missing("absent in fixture"),
+            "recent_blocks": Reading.derived(r.get("recent_blocks", 0),
+                                             "fixture"),
+        }
+        new = decide(c)
+        logged = r["logged_decision"]
+        changed = new["decision"] != logged
+        agree += not changed
+        disagree += changed
+        mark = "  <-- CHANGED" if changed else ""
+        print(f"{r['n']:>3}  {logged:<7} {new['decision']:<8}  "
+              f"{r.get('thermal_mode','?')} {r.get('thermal_temp','?')}C"
+              f"{'':<6} {r['user_input'][:34]}{mark}")
+
+    n = len(recs)
+    drift = 100.0 * disagree / n if n else 0.0
+    print()
+    print(f"  {n} replayed, {agree} agree, {disagree} disagree")
+    print(f"  verdict drift {drift:.1f}% under identical inputs")
+    print()
+    print("  Component bytes differ from those that produced the logged")
+    print("  verdicts (see the provenance table in the ledger record), so")
+    print("  any disagreement here is type B drift. This does NOT")
+    print("  reconstruct the mixed build that produced the originals.")
+    print("=" * 70)
+    return 0
+
+
 def replay(path: str) -> int:
     """Re-verdict every logged decision with the CURRENT components.
 
@@ -642,11 +731,16 @@ def main() -> int:
     ap.add_argument("--selftest", action="store_true")
     ap.add_argument("--probe", action="store_true")
     ap.add_argument("--replay", metavar="LOG")
+    ap.add_argument("--replay-fixture", action="store_true",
+                    help="reproduce SE-008 from the ledger fixture; "
+                         "no log, model, network or sensors needed")
     a = ap.parse_args()
     if a.selftest:
         return selftest()
     if a.probe:
         return probe()
+    if a.replay_fixture:
+        return replay_fixture()
     if a.replay:
         return replay(a.replay)
     return interactive()
