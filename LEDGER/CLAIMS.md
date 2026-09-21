@@ -9,6 +9,8 @@
 | SE-005 | On a synthetic marginal-preserving generator, the labeled-audit budget needed to discriminate a valid verifier from an expired one is finite at every tested validity gap and decreases as the gap widens | `SE-D3-001` | SUPPORTED |
 | SE-006 | That frontier survives an audit policy the adversary can predict | `SE-D3-001` | NOT TESTED |
 | SE-007 | The specific assumption whose failure expired the verifier can be identified above chance from the same labeled audit | `SE-D3-001` | SUPPORTED |
+| SE-008 | A rule scoring 0.0 without veto authority can be outvoted by unrelated rules in a weighted mean, producing a permissive verdict under a lockout condition | `SE-RT-001` | SUPPORTED |
+| SE-009 | Every advisory rule that can express a hard-stop condition has been given verdict-level veto authority | `SE-RT-001` | NOT TESTED |
 | ENGINE-001 | `sovereign_ops` v0.1 derives an admissible verdict from a complete evidence set | `probe_engine_accepts.py` @ `d43820c` | REFUTED |
 
 A claim moves to SUPPORTED only when an experiment record in `experiments/` names the revision, the seeds, the environment and the verdict that supports it. A claim moves to REPRODUCED only when a party other than the author has run it and recorded the result. No claim in this ledger is currently REPRODUCED.
