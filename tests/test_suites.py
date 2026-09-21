@@ -53,6 +53,8 @@ SUITES = [
      "denylist false-negative and false-positive rates"),
     ("probe_engine_accepts.py", [], 0,
      "evidence-engine capability probe"),
+    ("conformal.py", [], 0,
+     "split conformal prediction: coverage and its anti-vacuity control"),
 ]
 
 # Every one of these MUST exit nonzero. This is the anti-vacuity contract:
@@ -63,6 +65,7 @@ SABOTAGE = [
     ("intent_detector.py", "target vocabulary emptied"),
     ("measure_denylist.py", "labels swapped"),
     ("probe_engine_accepts.py", "accepting branch injected"),
+    ("conformal.py", "self-comparison restored"),
 ]
 
 

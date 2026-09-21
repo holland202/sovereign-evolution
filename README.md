@@ -232,7 +232,7 @@ Conformal Prediction
 
 A distribution-free prediction-interval component with empirical coverage testing.
 
-**Not in this repository.** The implementation and its measured empirical coverage (89.5–91.8%) are held separately and have not been ported here. Nothing in the 24-test suite exercises it.
+**In this repository** as `conformal.py`, ported 2026-09-21. Its measured empirical coverage reproduces the July figures exactly on device: 89.5% under Gaussian noise, 91.8% under exponential (the distribution-free property), against a 90% target with a 3-standard-error tolerance. A third case calibrated on sigma=0.5 and tested on sigma=4.0 collapses to 17.0%, which establishes that under-coverage is detectable rather than assumed. `--sabotage` restores the self-comparison bug the original fixed and three of four assertions fail.
 
 These instruments are independent research components.
 
