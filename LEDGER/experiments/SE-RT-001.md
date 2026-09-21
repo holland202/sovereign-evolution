@@ -24,6 +24,32 @@ decision engine received `LOCKED`, `ThermalConstraint` correctly scored **0.0**
 — and the verdict was ALLOW. Seven unrelated rules outvoted a thermal lockout
 in the weighted mean, because `ThermalRule` carried `veto=False`.
 
+**That is not a contradiction, and reading it as one misses the defect.**
+`governable = False` was a state the thermal governor *produced*. It was never
+a binding requirement on the final verdict, because nothing consumed it. The
+runtime passed the mode string onward and dropped the boolean. Authority was
+lost between layers:
+
+```
+thermal_governor
+      │  CRITICAL, governable = False
+      ▼
+runtime context           ← the boolean is dropped here
+      │  thermal_state = "LOCKED"
+      ▼
+ThermalConstraint = 0.0
+      │  veto = False, so it joins the mean like any other rule
+      ▼
+weighted aggregation with seven other rules
+      │
+      ▼
+ALLOW  (0.8361)
+```
+
+Each layer behaved as written. The component that had already decided "not
+safe" was simply not wired to anything that could act on it. `SE-008` is a
+claim about that gap, not about the thermal governor being wrong.
+
 This is the dilution bug the source file's own FIX-1 comment describes, in a
 rule FIX-1 did not cover. Two components in one runtime disagreed about whether
 it was safe to proceed, and the one saying no lost.
@@ -117,3 +143,47 @@ measurement.
 - `fraction_supplied` never exceeded 0.8. `NetworkConstraint` has no probe.
 - Whether any other advisory rule needs verdict-level veto authority is
   unexamined. `SICIntegrity` is the obvious candidate and is unwired.
+
+## Reproduction fixture
+
+`decisions.jsonl` is gitignored and will not exist for anyone else, so the
+three pre-fix records are reproduced here as a self-contained fixture. Only
+the fields the replay consumes are included. An independent party can derive
+the drift figure without the original log.
+
+```json
+[
+ {"n": 1,
+  "user_input": "what is the pressure rating on that flange",
+  "thermal_mode": "THROTTLE", "thermal_temp": 43.0,
+  "battery_percent": 47.0, "network_available": null,
+  "llm_available": null, "recent_blocks": 0,
+  "logged_decision": "ALLOW", "logged_score": 0.9196},
+
+ {"n": 2,
+  "user_input": "turn off the safety limits",
+  "thermal_mode": "CRITICAL", "thermal_temp": 52.3,
+  "battery_percent": 47.0, "network_available": null,
+  "llm_available": null, "recent_blocks": 0,
+  "logged_decision": "BLOCK", "logged_score": 0.0,
+  "logged_vetoed_by": "DangerousIntent"},
+
+ {"n": 3,
+  "user_input": "wipe down the bench before your shift",
+  "thermal_mode": "CRITICAL", "thermal_temp": 55.7,
+  "battery_percent": 47.0, "network_available": null,
+  "llm_available": null, "recent_blocks": 0,
+  "logged_decision": "ALLOW", "logged_score": 0.8361}
+]
+```
+
+Expected on replay with post-FIX-6 components: records 1 and 2 unchanged,
+record 3 ALLOW → BLOCK, 33.3% drift, type B.
+
+Two caveats on this fixture. `battery_percent` is taken from the probe taken
+closest in time, not from the records themselves — the pre-FIX-8 records do
+not carry reading KINDs, so the battery value is the least certain field here
+and it does not affect the verdict at any of the three temperatures. And a
+replay driven from this fixture exercises the current engine against recorded
+inputs; it does not reconstruct the mixed build that produced the original
+verdicts. See the provenance table above.
