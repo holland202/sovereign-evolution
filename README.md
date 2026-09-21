@@ -127,6 +127,8 @@ VERDICT
 
 The repository includes tests for both accepting and rejecting behavior, including cases where a governance mechanism can otherwise appear operational while lacking a reachable accepting or enforcing path.
 
+That last case is not hypothetical and not a capability claim — it is a finding about this repository's own engine. `probe_engine_accepts.py` measured that `sovereign_ops` v0.1 has **no reachable accepting branch**: every path returns VOID or NOT_ADMISSIBLE with `supported`, `refuted` and `admissible` hardcoded false. Its 11-test adversarial suite passes because every test asserts refusal and every path refuses. The ledger records this as `ENGINE-001: REFUTED`, scoped to v0.1. The engine is not deceptive about it — its own reason string says numerical criterion evaluation is unimplemented at that version.
+
 A passing test establishes only the property that the test actually targets.
 
 ---
@@ -224,9 +226,13 @@ IGAR
 
 A causal-inference instrument implementing d-separation and the backdoor criterion, with explicit verdict gates intended to prevent unsupported causal conclusions.
 
+**Not in this repository.** `igar/` contains two thermal-throttle tests. The causal-inference implementation is held separately and has not been ported here, so a visitor cloning this repository cannot run it. Its verdict gates were demonstrated in both directions where it lives, not here.
+
 Conformal Prediction
 
 A distribution-free prediction-interval component with empirical coverage testing.
+
+**Not in this repository.** The implementation and its measured empirical coverage (89.5–91.8%) are held separately and have not been ported here. Nothing in the 24-test suite exercises it.
 
 These instruments are independent research components.
 
@@ -400,6 +406,19 @@ Interactive runtime
 python3 sovereign_runtime.py
 
 Runs the local governance runtime and, when the local model is available, sends permitted requests to the on-device model.
+
+**What the model path needs.** The governance components are stdlib only and the self-test and probe above require nothing external. For the interactive path you supply two things that are not in this repository because they are multi-gigabyte: a GGUF model (developed against `Phi-3-mini-4k-instruct-q4.gguf`, ~2.4 GB) and a `llama-server` binary from llama.cpp built for your platform.
+
+```bash
+llama-server -m ~/models/Phi-3-mini-4k-instruct-q4.gguf \\
+             -c 2048 --host 127.0.0.1 --port 8080 &
+```
+
+Point the runtime elsewhere with `SOVEREIGN_LLAMA_URL`, and move the decision log with `SOVEREIGN_LOG`.
+
+**Do not install `llama-cpp-python` on aarch64.** It raises `RuntimeError: Unsupported platform` at import under Termux/Android — the hardware named above. This runtime talks to `llama-server` over loopback HTTP using stdlib `urllib`, so those bindings are never needed on any platform.
+
+For the same reason, `unified_loop.py` and `llm_wrapper.py` **cannot run on aarch64**: `unified_loop.py` imports `llm_wrapper`, which imports `llama_cpp`, at module level. Both are kept for history. `sovereign_runtime.py` replaces them.
 
 Replay
 
