@@ -1,0 +1,2 @@
+# Research Profile — Sovereign Evolution
+Read README.md and current design documents. This is offline edge-native evidence accounting and AI-governance research. Keep MEASURED, DERIVED, OPERATOR and ABSENT distinct, never infer absent sensor inputs. Bind conclusions to provenance, local revision, replay and real hardware receipts. No claim of device testing from simulation, no unapproved cloud dependencies, trials or merges.
