@@ -1,0 +1,24 @@
+{
+  "title": "Sovereign Evolution: Edge-native AI governance research and prototype",
+  "description": "Edge-native AI governance research and prototype. No cloud, no API, no telemetry.",
+  "upload_type": "software",
+  "license": "MIT",
+  "creators": [
+    {
+      "name": "Holland, Chad",
+      "orcid": "0009-0004-1943-0585"
+    }
+  ],
+  "keywords": [
+    "AI governance",
+    "edge AI",
+    "evidence accounting"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "https://github.com/holland202/sovereign-evolution",
+      "relation": "isSupplementTo",
+      "scheme": "url"
+    }
+  ]
+}
